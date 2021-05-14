@@ -1,0 +1,25 @@
+Post 2 different applications of data science and what skills you would need to obtain work in those areas.
+
+	Computer Vision - set of algorithms used for object detection and classification, applications include autonomous vehicles, image search, manufacturing defects detection. Skills include Convolutional Neural Networks, specialized algorithms like YOLO, efficient data storage and processing pipelines.
+
+	Anomaly Detection - applications include computer security, fraud detection, manufacturing defects detection. Skills include basic statistics like arithmetic mean and median, standard deviation and variance, data visualization, timeseries storage and analysis.
+
+
+
+
+Based on the AirBnB article, discuss 3 ways companies use data science tools and what you like or don’t like about those.
+
+	One of the approaches AirBnB uses is creating R packages for common tasks, which significantly reduces duplication of effort, i.e. follows D.R.Y. (Don't Repeat Yourself) principle of software engineering, by creating a single place where a solution to a common problem exists, which in turn allows any improvement or other contribution to this centralized solution to go through a formal code review process, ensuring high quality and long term maintainability. I believe this is a must have for any large organization, it introduces common set of coding standards, avoids reinventing the wheel and saves time, and improves developer skills.
+
+	Another approach at AirBnB is developer education, which starts with onboarding new developers through a "data bootcamp" to ensure all devs are on the same page and understand how to use common tools and solve common challenges. After the bootcamp, developers are encouraged to continue learning and improving their skills via DataCamp and internal resources and mentorship. I think this is also very important and necessary, data science tools and approaches are always evolving, and its critical for developers to stay on top of the changes.
+
+	Third important approach at AirBnB is the infrastructure, which allows for easy data pipelining and collaboration to tackle the scale and velocity of their data effectively. I believe this is also a critical part of data science, the amount of data only grows, and tools are always evolving, so its very important to have a robust and agile data engineering and devops approach.
+
+
+
+
+Based on the videos from industry and academia: Which of the application areas you viewed was most interesting and why?  What skills will you need to get if you want to do this type of work?
+
+	I am most interested in geographic data science. My goal is to use data science methods to help deal with the climate change, specifically food production and distribution (a.k.a. Farming2.0), and GIS would be one of the key components in selecting and managing future suitable farming environments as well as understanding and mitigating impact on existing locations and processes.
+
+	Some of the skills would be GIS and related technologies and algorithms, interfacing with sensor networks, analyzing timeseries, creating and evaluating models based on the data for farm automation control and other decision support.
