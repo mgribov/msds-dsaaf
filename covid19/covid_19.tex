@@ -1,0 +1,516 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Are COVID19 new daily deaths per thousand affected by a state's political affiliation?},
+  pdfauthor={MG},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Are COVID19 new daily deaths per thousand affected by a state's
+political affiliation?}
+\author{MG}
+\date{April 13, 2024}
+
+\begin{document}
+\maketitle
+
+\hypertarget{summary}{%
+\section{Summary}\label{summary}}
+
+This report analyses the COVID19 Dataset from Center for Systems Science
+and Engineering (CSSE) at Johns Hopkins University
+\url{https://github.com/CSSEGISandData/COVID-19}.
+
+The dataset contains global COVID19 confirmed cases and deaths, and the
+data was collected between the beginning of the pandemic in March of
+2020 until March 10, 2023.
+
+This report will focus on USA data only, and will explore if a state's
+political affiliation, as determined by presidential vote outcome in
+2020 election (i.e.~``red'' - republican vs.~``blue'' - democratic
+state), has any effect on COVID19 daily deaths per thousand.
+
+@todo: how to easily viz red vs blue cases/deaths? barplot? @todo: how
+to split up data into train vs test sets? - by date? @todo: model =
+deaths\_per\_thou \textasciitilde{} blue vs red? @todo: bias sources:
+pandemic started in northeast, so in the beginning the numbers there are
+much higher new variants, vaccines, generally low number of features
+(not using vax vs unvax, mask mandates, etc)
+
+\hypertarget{importing-and-cleaning-the-data}{%
+\section{Importing and Cleaning the
+data}\label{importing-and-cleaning-the-data}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(readxl)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+First, we will load the US data and perform some basic cleanup. We will
+use the CSV files for US confirmed cases and deaths.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{url\_in }\OtherTok{\textless{}{-}} \StringTok{"https://raw.githubusercontent.com/CSSEGISandData/COVID{-}19/master/csse\_covid\_19\_data/csse\_covid\_19\_time\_series/"}
+
+\NormalTok{file\_names }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{\textquotesingle{}time\_series\_covid19\_confirmed\_US.csv\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}time\_series\_covid19\_deaths\_US.csv\textquotesingle{}}
+\NormalTok{)}
+
+\NormalTok{urls }\OtherTok{\textless{}{-}} \FunctionTok{str\_c}\NormalTok{(url\_in, file\_names)}
+
+\NormalTok{US\_cases }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(urls[}\DecValTok{1}\NormalTok{])}
+\NormalTok{US\_deaths }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(urls[}\DecValTok{2}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+The cases and deaths CSV files contain several columns which we will not
+be using, for example: ``UID'', ``Lat'', ``Long'', and others, and also
+use a column for each date, so we will remove the unused columns, and
+convert the date columns into a single column called ``date'' and
+convert their values into a Date object.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_cases }\OtherTok{\textless{}{-}}\NormalTok{ US\_cases }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{(UID}\SpecialCharTok{:}\NormalTok{Combined\_Key), }\AttributeTok{names\_to=}\StringTok{"date"}\NormalTok{, }\AttributeTok{values\_to=}\StringTok{"cases"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Admin2}\SpecialCharTok{:}\NormalTok{cases) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{mdy}\NormalTok{(date)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(Lat, Long\_))}
+
+\NormalTok{US\_deaths }\OtherTok{\textless{}{-}}\NormalTok{ US\_deaths }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =} \SpecialCharTok{{-}}\NormalTok{(UID}\SpecialCharTok{:}\NormalTok{Population), }\AttributeTok{names\_to=}\StringTok{"date"}\NormalTok{, }\AttributeTok{values\_to=}\StringTok{"deaths"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Admin2}\SpecialCharTok{:}\NormalTok{deaths) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{mdy}\NormalTok{(date)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(Lat, Long\_))}
+\end{Highlighting}
+\end{Shaded}
+
+Next, we will merge US cases and deaths data into a single dataframe.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US }\OtherTok{\textless{}{-}}\NormalTok{ US\_cases }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{full\_join}\NormalTok{(US\_deaths)}
+\end{Highlighting}
+\end{Shaded}
+
+Now, let's look at the summary of the combined cases and deaths dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(US)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Admin2          Province_State     Country_Region     Combined_Key      
+##  Length:3819906     Length:3819906     Length:3819906     Length:3819906    
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##       date                cases           Population           deaths       
+##  Min.   :2020-01-22   Min.   :  -3073   Min.   :       0   Min.   :  -82.0  
+##  1st Qu.:2020-11-02   1st Qu.:    330   1st Qu.:    9917   1st Qu.:    4.0  
+##  Median :2021-08-15   Median :   2272   Median :   24892   Median :   37.0  
+##  Mean   :2021-08-15   Mean   :  14088   Mean   :   99604   Mean   :  186.9  
+##  3rd Qu.:2022-05-28   3rd Qu.:   8159   3rd Qu.:   64979   3rd Qu.:  122.0  
+##  Max.   :2023-03-09   Max.   :3710586   Max.   :10039107   Max.   :35545.0
+\end{verbatim}
+
+From the summary we can see that Population column has rows with 0 as
+the value, and there are also rows where cases or deaths are less than
+0, so let's remove those rows.
+
+Additionally, since we are using 2020 election to determine political
+affiliation of the sates, let's use the data starting January 1, 2021.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US }\OtherTok{\textless{}{-}}\NormalTok{ US }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Population }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, cases }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{, deaths }\SpecialCharTok{\textgreater{}=} \DecValTok{0}\NormalTok{, date }\SpecialCharTok{\textgreater{}=} \StringTok{\textquotesingle{}2021{-}01{-}01\textquotesingle{}}\NormalTok{)}
+
+\FunctionTok{summary}\NormalTok{(US)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Admin2          Province_State     Country_Region     Combined_Key      
+##  Length:2575146     Length:2575146     Length:2575146     Length:2575146    
+##  Class :character   Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+##                                                                             
+##                                                                             
+##                                                                             
+##       date                cases           Population           deaths       
+##  Min.   :2021-01-01   Min.   :      0   Min.   :      86   Min.   :    0.0  
+##  1st Qu.:2021-07-19   1st Qu.:   1722   1st Qu.:   11137   1st Qu.:   26.0  
+##  Median :2022-02-03   Median :   4626   Median :   26205   Median :   71.0  
+##  Mean   :2022-02-03   Mean   :  20025   Mean   :  103153   Mean   :  253.6  
+##  3rd Qu.:2022-08-22   3rd Qu.:  12823   3rd Qu.:   67493   3rd Qu.:  179.0  
+##  Max.   :2023-03-09   Max.   :3710586   Max.   :10039107   Max.   :35545.0
+\end{verbatim}
+
+Since we will be analyzing data for each of the US states, we will next
+create a dataframe with cases and deaths statistics for each state.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ US }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Province\_State, Country\_Region, date) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{cases =} \FunctionTok{sum}\NormalTok{(cases), }\AttributeTok{deaths =} \FunctionTok{sum}\NormalTok{(deaths), }\AttributeTok{Population =} \FunctionTok{sum}\NormalTok{(Population)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Province\_State, Country\_Region, date, cases, deaths, Population) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{data-exploration-and-feature-engineering}{%
+\section{Data Exploration and Feature
+Engineering}\label{data-exploration-and-feature-engineering}}
+
+\hypertarget{adding-deaths-per-thousand-data}{%
+\subsection{Adding deaths per thousand
+data}\label{adding-deaths-per-thousand-data}}
+
+The numbers for deaths in the dataset are cumulative, so let's see which
+states are top 10 by the end of the data collection period.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Province\_State) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{deaths =} \FunctionTok{max}\NormalTok{(deaths), }\AttributeTok{population =} \FunctionTok{max}\NormalTok{(Population)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{slice\_max}\NormalTok{(deaths, }\AttributeTok{n =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+##    Province_State deaths population
+##    <chr>           <dbl>      <dbl>
+##  1 California     101159   39512223
+##  2 Texas           93355   28995881
+##  3 Florida         86454   21477737
+##  4 New York        76592   19453561
+##  5 Pennsylvania    50398   12801989
+##  6 Michigan        41964    9986857
+##  7 Ohio            41794   11689100
+##  8 Georgia         40833   10617423
+##  9 Illinois        36431   12671821
+## 10 New Jersey      36015    8882190
+\end{verbatim}
+
+Sate population varies significantly, and deaths will tend to be higher
+in states with larger population, so we will add a new variable
+``deaths\_per\_thou'' to have a better way to compare individual state's
+numbers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{deaths\_per\_thou =}\NormalTok{ deaths }\SpecialCharTok{*} \DecValTok{1000} \SpecialCharTok{/}\NormalTok{ Population)}
+\end{Highlighting}
+\end{Shaded}
+
+We can now see what are the top 10 states with highest total deaths per
+thousand people.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Province\_State) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarize}\NormalTok{(}\AttributeTok{deaths\_per\_thou =} \FunctionTok{max}\NormalTok{(deaths\_per\_thou), }\AttributeTok{population =} \FunctionTok{max}\NormalTok{(Population)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{slice\_max}\NormalTok{(deaths\_per\_thou, }\AttributeTok{n =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+##    Province_State deaths_per_thou population
+##    <chr>                    <dbl>      <dbl>
+##  1 Arizona                   4.55    7278717
+##  2 Mississippi               4.49    2976149
+##  3 West Virginia             4.44    1792147
+##  4 New Mexico                4.32    2096829
+##  5 Arkansas                  4.31    3017804
+##  6 Alabama                   4.29    4903185
+##  7 Tennessee                 4.21    6829174
+##  8 Michigan                  4.20    9986857
+##  9 Kentucky                  4.06    4467673
+## 10 New Jersey                4.05    8882190
+\end{verbatim}
+
+\hypertarget{adding-daily-new-deaths-data}{%
+\subsection{Adding daily new deaths
+data}\label{adding-daily-new-deaths-data}}
+
+We are specifically interested in daily deaths in each state, so we will
+add two new columns ``new\_deaths''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{new\_deaths =}\NormalTok{ deaths }\SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(deaths))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(new\_deaths }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ new\_deaths)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =} \StringTok{"new\_deaths"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =} \StringTok{"new\_deaths"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_log10}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle=}\DecValTok{90}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \FunctionTok{str\_c}\NormalTok{(}\StringTok{"COVID19 Daily Deaths (log scale)"}\NormalTok{), }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{covid_19_files/figure-latex/viz_new_deaths-1.pdf}
+
+Now lets add another column, ``new\_deaths\_per\_thou'' to account for
+differences in states' population.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{new\_deaths\_per\_thou =}\NormalTok{ new\_deaths }\SpecialCharTok{*} \DecValTok{1000} \SpecialCharTok{/}\NormalTok{ Population)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(new\_deaths\_per\_thou }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ new\_deaths\_per\_thou)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =} \StringTok{"new\_deaths\_per\_thou"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =} \StringTok{"new\_deaths\_per\_thou"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_log10}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle=}\DecValTok{90}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \FunctionTok{str\_c}\NormalTok{(}\StringTok{"COVID19 Daily Deaths Per Thousand (log scale)"}\NormalTok{), }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{covid_19_files/figure-latex/viz_new_deaths_per_thou-1.pdf}
+
+\hypertarget{adding-state-party-affiliation}{%
+\subsection{Adding state party
+affiliation}\label{adding-state-party-affiliation}}
+
+Next, we will add a new field to mark a state as ``red'' or ``blue''. We
+will official data from the Federal Election Commission. The full
+dataset is an Excel spreadsheet, available here:
+\url{https://www.fec.gov/documents/4228/federalelections2020.xlsx}. The
+spreadsheet includes multiple sheets, we will be using sheet 9, ``2020
+Pres General Results''. We will also remove spaces from the column
+names.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{election\_results }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{\textquotesingle{}./federalelections2020.xlsx\textquotesingle{}}\NormalTok{, }\AttributeTok{sheet =} \DecValTok{9}\NormalTok{)}
+
+\CommentTok{\# remove spaces from column names}
+\FunctionTok{names}\NormalTok{(election\_results) }\OtherTok{\textless{}{-}} \FunctionTok{make.names}\NormalTok{(}\FunctionTok{names}\NormalTok{(election\_results), }\AttributeTok{unique =} \ConstantTok{TRUE}\NormalTok{)}
+
+\FunctionTok{colnames}\NormalTok{(election\_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "X1"                            "FEC.ID"                       
+##  [3] "STATE"                         "STATE.ABBREVIATION"           
+##  [5] "GENERAL.ELECTION.DATE"         "FIRST.NAME"                   
+##  [7] "LAST.NAME"                     "LAST.NAME...FIRST"            
+##  [9] "TOTAL.VOTES"                   "PARTY"                        
+## [11] "GENERAL.RESULTS"               "GENERAL.."                    
+## [13] "TOTAL.VOTES.."                 "COMBINED.GE.PARTY.TOTALS..NY."
+## [15] "COMBINED....NY."               "WINNER.INDICATOR"             
+## [17] "ELECTORAL.VOTES"               "FOOTNOTES"
+\end{verbatim}
+
+We will be using the ``WINNER.INDICATOR'' column with value of ``W'' or
+``W*'' (for Maine) to get the winner for each state, and the ``PARTY''
+column to determine the party affiliation for that winner. ``STATE''
+column will be used to map the winner and their party to a specific
+state.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{election\_results\_clean }\OtherTok{\textless{}{-}}\NormalTok{ election\_results }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(STATE, PARTY, WINNER.INDICATOR) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(WINNER.INDICATOR }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}W\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}W*\textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+``PARTY'' column has several different values, not just ``D'' or ``R'':
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{unique}\NormalTok{(election\_results\_clean}\SpecialCharTok{$}\NormalTok{PARTY)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "R"                 "D"                 "DFL"              
+## [4] "Combined Parties:" "WF"
+\end{verbatim}
+
+``DFL'' is the Minnesota Democratic Party
+(\url{https://dfl.org/about/}), so we can treat value ``DFL'' as ``D''.
+New York state's ``WF'' is the Working Families party
+(\url{https://workingfamilies.org/state/new-york/}) and is also a
+Democratic party, so we can omit that row, since New York already has a
+winner entry with value ``D''. Additionally, ``Combined Parties:'' for
+New York appears to be a special indicator to mark both Democratic and
+Working Families parties as the winner, so we can also omit this row.
+Finally, we will drop ``WINNER.INDICATOR'' column, and will rename
+values of ``D'' to ``blue'', and ``R'' to ``red'' to make the results
+more readable for the final analysis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{election\_results\_clean }\OtherTok{\textless{}{-}}\NormalTok{ election\_results\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(PARTY }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}D\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}R\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}DFL\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{PARTY =} \FunctionTok{recode}\NormalTok{(PARTY, }\AttributeTok{DFL =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{, }\AttributeTok{R =} \StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, }\AttributeTok{D =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{WINNER.INDICATOR)}
+\end{Highlighting}
+\end{Shaded}
+
+Next, we will merge the political affiliation data with our COVID19 by
+state dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{full\_join}\NormalTok{(election\_results\_clean, }\AttributeTok{by =} \FunctionTok{join\_by}\NormalTok{(Province\_State }\SpecialCharTok{==}\NormalTok{ STATE))}
+\end{Highlighting}
+\end{Shaded}
+
+Now we can visualize the changes in daily deaths per thousand broken out
+by Democratic vs.~Republican states
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{US\_by\_state }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(new\_deaths\_per\_thou }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, PARTY }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ new\_deaths\_per\_thou, }\AttributeTok{color =}\NormalTok{ PARTY)) }\SpecialCharTok{+}
+  \CommentTok{\#geom\_point() +}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{FALSE}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{group =}\NormalTok{ PARTY)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"red"} \OtherTok{=} \StringTok{"red"}\NormalTok{, }\StringTok{"blue"} \OtherTok{=} \StringTok{"blue"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_log10}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Daily deaths per thousand by Republican vs. Democratic states"}\NormalTok{, }\AttributeTok{y =} \ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{covid_19_files/figure-latex/viz_new_deaths_blue_vs_red-1.pdf}
+
+\end{document}

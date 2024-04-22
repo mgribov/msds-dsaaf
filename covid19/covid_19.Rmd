@@ -1,0 +1,260 @@
+---
+title: "Are COVID19 new daily deaths per thousand affected by a state's political affiliation?"
+author: "MG"
+date: "April 13, 2024"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Summary
+
+This report analyses the COVID19 Dataset from Center for Systems Science and Engineering (CSSE) at Johns Hopkins University <https://github.com/CSSEGISandData/COVID-19>.
+
+The dataset contains global COVID19 confirmed cases and deaths, and the data was collected between the beginning of the pandemic in March of 2020 until March 10, 2023.
+
+This report will focus on USA data only, and will explore if a state's political affiliation, as determined by presidential vote outcome in 2020 election (i.e. "red" - republican vs. "blue" - democratic state), has any effect on COVID19 daily deaths per thousand.
+
+# Importing and Cleaning the data
+
+```{r depends, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(ggplot2)
+```
+
+First, we will load the US data and perform some basic cleanup. We will use the CSV files for US confirmed cases and deaths.
+
+```{r load_data, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+url_in <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/"
+
+file_names <- c(
+  'time_series_covid19_confirmed_US.csv',
+  'time_series_covid19_deaths_US.csv'
+)
+
+urls <- str_c(url_in, file_names)
+
+US_cases <- read_csv(urls[1])
+US_deaths <- read_csv(urls[2])
+```
+
+The cases and deaths CSV files contain several columns which we will not be using, for example: "UID", "Lat", "Long", and others, and also use a column for each date, so we will remove the unused columns, and convert the date columns into a single column called "date" and convert their values into a Date object.
+
+```{r cleanup_us_data, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+US_cases <- US_cases %>% 
+  pivot_longer(cols = -(UID:Combined_Key), names_to="date", values_to="cases") %>%
+  select(Admin2:cases) %>%
+  mutate(date = mdy(date)) %>%
+  select(-c(Lat, Long_))
+
+US_deaths <- US_deaths %>% 
+  pivot_longer(cols = -(UID:Population), names_to="date", values_to="deaths") %>%
+  select(Admin2:deaths) %>%
+  mutate(date = mdy(date)) %>%
+  select(-c(Lat, Long_))
+  
+```
+
+Next, we will merge US cases and deaths data into a single dataframe.
+
+```{r join_cases_deaths, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+US <- US_cases %>%
+  full_join(US_deaths)
+```
+
+Now, let's look at the summary of the combined cases and deaths dataset.
+
+```{r data_summary, echo=TRUE, message=FALSE, warning=FALSE}
+summary(US)
+```
+
+From the summary we can see that Population column has rows with 0 as the value, and there are also rows where cases or deaths are less than 0, so let's remove those rows.
+
+Additionally, since we are using 2020 election to determine political affiliation of the sates, let's use the data starting January 1, 2021.
+
+```{r remove_zero_pop, echo=TRUE, message=FALSE, warning=FALSE}
+US <- US %>%
+  filter(Population > 0, cases >= 0, deaths >= 0, date >= '2021-01-01')
+
+summary(US)
+```
+
+Since we will be analyzing data for each of the US states, we will next create a dataframe with cases and deaths statistics for each state. 
+
+```{r us_data_by_state, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+US_by_state <- US %>%
+  group_by(Province_State, Country_Region, date) %>%
+  summarize(cases = sum(cases), deaths = sum(deaths), Population = sum(Population)) %>%
+  select(Province_State, Country_Region, date, cases, deaths, Population) %>%
+  ungroup()
+```
+
+# Data Exploration and Feature Engineering
+
+### Adding deaths per thousand data
+
+The numbers for deaths in the dataset are cumulative, so let's see which states are top 10 by the end of the data collection period.
+
+```{r table_total_deaths, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state %>%
+  group_by(Province_State) %>%
+  summarize(deaths = max(deaths), population = max(Population)) %>%
+  slice_max(deaths, n = 10)
+```
+
+Sate population varies significantly, and deaths will tend to be higher in states with larger population, so we will add a new variable "deaths_per_thou" to have a better way to compare individual state's numbers.
+
+```{r add_dpt_total, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+US_by_state <- US_by_state %>%
+  mutate(deaths_per_thou = deaths * 1000 / Population)
+```
+
+We can now see what are the top 10 states with highest total deaths per thousand people.
+
+```{r table_total_deaths_per_thou, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state %>%
+  group_by(Province_State) %>%
+  summarize(deaths_per_thou = max(deaths_per_thou), population = max(Population)) %>%
+  slice_max(deaths_per_thou, n = 10)
+```
+
+### Adding daily new deaths data
+
+We are specifically interested in daily deaths in each state, so we will add two new columns "new_deaths".
+
+```{r add_daily_rates, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state <- US_by_state %>%
+  mutate(new_deaths = deaths - lag(deaths))
+```
+
+
+```{r viz_new_deaths, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state %>%
+  filter(new_deaths > 0) %>%
+  ggplot(aes(x = date, y = new_deaths)) +
+  #geom_line(aes(color = "new_deaths")) +
+  geom_point(aes(color = "new_deaths")) +
+  scale_y_log10() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle=90)) +
+  labs(title = str_c("COVID19 Daily Deaths (log scale)"), y = NULL)
+  
+```
+
+Now lets add another column, "new_deaths_per_thou" to account for differences in states' population.
+
+```{r add_daily_rates_per_thou, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state <- US_by_state %>%
+  mutate(new_deaths_per_thou = new_deaths * 1000 / Population)
+```
+
+
+```{r viz_new_deaths_per_thou, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state %>%
+  filter(new_deaths_per_thou > 0) %>%
+  ggplot(aes(x = date, y = new_deaths_per_thou)) +
+  #geom_line(aes(color = "new_deaths_per_thou")) +
+  geom_point(aes(color = "new_deaths_per_thou")) +
+  scale_y_log10() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle=90)) +
+  labs(title = str_c("COVID19 Daily Deaths Per Thousand (log scale)"), y = NULL)
+  
+```
+
+### Adding state party affiliation
+
+Next, we will add a new field to mark a state as "red" or "blue". We will official data from the Federal Election Commission. The full dataset is an Excel spreadsheet, available here: <https://www.fec.gov/documents/4228/federalelections2020.xlsx>. 
+
+The spreadsheet includes multiple sheets, we will be using sheet 9, "2020 Pres General Results". We will also remove spaces from the column names.
+
+```{r read_election_xls, echo=TRUE, message=FALSE, warning=FALSE}
+download.file('https://www.fec.gov/documents/4228/federalelections2020.xlsx', destfile = './federalelections2020-downloaded.xlsx', mode='wb', quiet = TRUE)
+
+election_results <- read_excel('./federalelections2020-downloaded.xlsx', sheet = 9)
+
+# remove spaces from column names
+names(election_results) <- make.names(names(election_results), unique = TRUE)
+
+colnames(election_results)
+```
+
+We will be using the "WINNER.INDICATOR" column with value of "W" or "W*" (for Maine) to get the winner for each state, and the "PARTY" column to determine the party affiliation for that winner. "STATE" column will be used to map the winner and their party to a specific state. 
+
+```{r cleanup_election_results, echo=TRUE, message=FALSE, warning=FALSE}
+election_results_clean <- election_results %>%
+  select(STATE, PARTY, WINNER.INDICATOR) %>%
+  filter(WINNER.INDICATOR %in% c('W', 'W*'))
+  
+```
+
+"PARTY" column has several different values, not just "D" or "R":
+
+```{r party_uniq_vals, echo=TRUE, message=FALSE, warning=FALSE}
+unique(election_results_clean$PARTY)
+```
+"DFL" is the Minnesota Democratic Party (<https://dfl.org/about/>), so we can treat value "DFL" as "D". New York state's "WF" is the Working Families party (<https://workingfamilies.org/state/new-york/>) and is also a Democratic party, so we can omit that row, since New York already has a winner entry with value "D". Additionally, "Combined Parties:" for New York appears to be a special indicator to mark both Democratic and Working Families parties as the winner, so we can also omit this row. Finally, we will drop "WINNER.INDICATOR" column, and will rename values of "D" to "blue", and "R" to "red" to make the results more readable for the final analysis.
+
+```{r cleanup_election_results2, echo=TRUE, message=FALSE, warning=FALSE}
+election_results_clean <- election_results_clean %>%
+  filter(PARTY %in% c('D', 'R', 'DFL')) %>%
+  mutate(PARTY = recode(PARTY, DFL = 'blue', R = 'red', D = 'blue')) %>%
+  select(-WINNER.INDICATOR)
+  
+```
+
+Next, we will merge the political affiliation data with our COVID19 by state dataset.
+
+```{r US_by_state_party, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state <- US_by_state %>%
+  full_join(election_results_clean, by = join_by(Province_State == STATE))
+```
+
+Now we can visualize the changes in daily deaths per thousand broken out by Democratic vs. Republican states. We will use a regression a.k.a. "trend" line against the state daily deaths per thousand data split by "red" vs. "blue" states.
+
+```{r viz_new_deaths_blue_vs_red, echo=TRUE, message=FALSE, warning=FALSE}
+US_by_state %>%
+  filter(new_deaths_per_thou > 0, PARTY %in% c('red', 'blue')) %>%
+  ggplot(aes(x = date, y = new_deaths_per_thou, color = PARTY)) +
+  geom_smooth(method = "lm", se = FALSE, aes(group = PARTY)) +
+  scale_color_manual(values = c("red" = "red", "blue" = "blue")) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90)) +
+  labs(title = "Daily deaths per thousand by Republican (red) vs. Democratic (blue) states", y = NULL)
+```
+
+# Building a model to predict daily death rate per thousand based on states' political affiliation
+
+The plot above strongly suggests that there's an observable difference in daily death rates per thousand between Republican and Democratic states. We will now build a linear model to get an idea of statistical significance of the "red" vs. "blue" classification, and how it affects the death rate.
+
+```{r linear_mod, echo=TRUE, message=FALSE, warning=FALSE}
+mod <- lm(new_deaths_per_thou ~ PARTY, data = US_by_state)
+summary(mod)
+```
+The resulting model has very low R-squared number, and high p-values for the coefficients, and so we cannot use "red" vs. "blue" state classification alone to predict the death rate.
+
+# Conclusion and sources of bias
+
+The plot of regression lines of "red" vs. "blue" state daily death rate per thousand does suggests that there is some sort of a correlation between the political affiliation of the state and the rates, but a simple linear model did not find any statistically significant correlation. This is most likely due to many other factors not present in this dataset which somehow relate to the political affiliation of the states. 
+
+A future study should consider adding new features to the data, for example:
+
+* Policies and timelines surrounding mitigation efforts (e.g. mask mandates, social distancing) and their enforcement
+* Vaccination rates
+* Medical care availability
+* Population density
+* Various health metrics of a given state's population (e.g. obesity rates, smoking rates, etc.).
+
+### Potential sources of bias
+
+The dataset used in this analysis may have various issues which introduce some sort of a bias, for example: 
+
+* Difficulty in attributing deaths specifically to COVID19: 
+  * <https://www.aamc.org/news/how-are-covid-19-deaths-counted-it-s-complicated>
+* Issues with data reporting and collection from the various government agencies:
+  * <https://www.cidrap.umn.edu/covid-19/study-confusing-government-covid-reporting-requirements-led-disparities-hospital-data>
+* Classification of "red" vs. "blue" states based on 2020 election data can be problematic, for example, Joe Biden (D) won in Arizona making it a "blue" state, but the difference in popular votes was very small: 1,672,143 for Biden (D) vs. 1,661,686 for Trump (R), which is a difference of only 10,457 votes. Additionally, some states as "swing" or "purple" states, so their affiliation can change between elections, and their voter affiliation (Democrat vs. Republican) numbers may be very close.
+  * <https://www.fec.gov/documents/4228/federalelections2020.xlsx>
