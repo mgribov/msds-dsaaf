@@ -1,10 +1,10 @@
 ---
 title: "Analysis of NYPD Shooting Incident Dataset"
 author: "MG"
-date: "May 11, 2021"
+date: "April 11, 2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -24,19 +24,22 @@ This report will study how borough, location type, season of the year, and time 
 library(lubridate)
 library(dplyr)
 library(caret)
+library(randomForest)
+library(gbm)
+library(C50)
 
-# multi-core processing
-library(doMC)
-registerDoMC(cores = 3)
+# multi-core processing for training
+#library(doMC)
+#registerDoMC(cores = 3)
 ```
 
 
 First, lets import the data from the CSV file, and replace any blank cells with `NA`
 
 
-```{r import, echo=TRUE}
+```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 nypd_raw <- read.csv(
-  './NYPD_Shooting_Incident_Data__Historic_.csv', 
+  'https://raw.githubusercontent.com/mgribov/msds-dsaaf/main/nypd/NYPD_Shooting_Incident_Data__Historic_.csv', 
   header=T, 
   na.strings=c("","NA")
 )
@@ -44,7 +47,7 @@ nypd_raw <- read.csv(
 
 Next, we can see what the column names are, and we can look up their description from the metadata information included with the dataset. (<https://data.cityofnewyork.us/api/views/833y-fsy8/columns.json>)
 
-```{r cols, echo=TRUE}
+```{r cols, echo=TRUE, message=FALSE, warning=FALSE}
 colnames(nypd_raw)
 ```
 
@@ -52,7 +55,7 @@ We will use only some of the columns in the dataset, so we'll first add new colu
 
 First, create a new field `timestamp` from `OCCUR_DATE` and `OCCUR_TIME`
 
-```{r todate, echo=TRUE}
+```{r todate, echo=TRUE, message=FALSE, warning=FALSE}
 nypd_raw <- within(
   nypd_raw, 
   {timestamp=strptime(paste(OCCUR_DATE, ' ', OCCUR_TIME), "%m/%d/%Y%H:%M:%S")}
@@ -61,7 +64,7 @@ nypd_raw <- within(
 
 Next, lets create a new column which represents the season (Spring, Summer, Fall, Winter), based on the date.
 
-We will use `quarters()` function to determine which quarter the date belongs to, which would be the same as a season.
+We will use `quarters()` function to determine which quarter the date belongs to, which would be roughly the same as a season.
 
 ```{r seasons, echo=TRUE}
 nypd_raw$season <- as.factor(quarters(nypd_raw$timestamp))
@@ -224,15 +227,15 @@ We will train and evaluate several models used with classfication tasks: Random 
 
 **NOTE:** the code to generate the models is included, but commented out and instead replaced with loading saved models from original training, to speed up the knitting process.
 
-```{r caret_models, echo=TRUE}
-fitControl <- trainControl(
-  allowParallel = TRUE, 
-  ## 10-fold CV
-  method = "repeatedcv",
-  number = 10,
-  ## repeated ten times
-  repeats = 10
-)
+```{r caret_models, echo=TRUE, message=FALSE, warning=FALSE}
+#fitControl <- trainControl(
+#  allowParallel = TRUE, 
+#  ## 10-fold CV
+#  method = "repeatedcv",
+#  number = 10,
+#  ## repeated ten times
+#  repeats = 10
+#)
 
 #rf <- train(
 #  is_fatal ~ ., 
@@ -242,7 +245,8 @@ fitControl <- trainControl(
 #  trControl=fitControl
 #)
 #saveRDS(rf, "rf_full_model.rds")
-rf <- readRDS("rf_full_model.rds")
+download.file('https://raw.githubusercontent.com/mgribov/msds-dsaaf/main/nypd/rf_full_model.rds', destfile = './rf_full_model.rds', mode='wb', quiet = TRUE)
+rf <- readRDS("./rf_full_model.rds")
 
 # one of the initial hypotheses was that location of the shooting 
 # would affect the outcome, this was not the case
@@ -279,7 +283,8 @@ rf <- readRDS("rf_full_model.rds")
 #  na.action = na.omit
 #)
 #saveRDS(gb, "gbm_full_model.rds")
-gb <- readRDS("gbm_full_model.rds")
+download.file('https://raw.githubusercontent.com/mgribov/msds-dsaaf/main/nypd/gbm_full_model.rds', destfile = './gbm_full_model.rds', mode='wb', quiet = TRUE)
+gb <- readRDS("./gbm_full_model.rds")
 
 #c50 <- train(
 #  is_fatal ~ ., 
@@ -290,7 +295,8 @@ gb <- readRDS("gbm_full_model.rds")
 #  metric="Kappa"
 #)
 #saveRDS(c50, "c50_full_model.rds")
-c50 <- readRDS("c50_full_model.rds")
+download.file('https://raw.githubusercontent.com/mgribov/msds-dsaaf/main/nypd/c50_full_model.rds', destfile = './c50_full_model.rds', mode='wb', quiet = TRUE)
+c50 <- readRDS("./c50_full_model.rds")
 
 #knn <- train(
 #  is_fatal ~ ., 
@@ -300,7 +306,8 @@ c50 <- readRDS("c50_full_model.rds")
 #  trControl=fitControl
 #)
 #saveRDS(knn, "knn_full_model.rds")
-knn <- readRDS("knn_full_model.rds")
+download.file('https://raw.githubusercontent.com/mgribov/msds-dsaaf/main/nypd/knn_full_model.rds', destfile = './knn_full_model.rds', mode='wb', quiet = TRUE)
+knn <- readRDS("./knn_full_model.rds")
 ```
 
 
