@@ -367,7 +367,9 @@ year, and time of the day affect the fatal outcome of a shooting
 </div>
 <div id="importing-and-cleaning-the-data" class="section level1">
 <h1>Importing and Cleaning the data</h1>
-<pre class="r"><code># required libraries
+<pre class="r"><code>set.seed(12345)
+
+# required libraries
 library(lubridate)
 library(dplyr)
 library(caret)
@@ -646,37 +648,95 @@ knn &lt;- readRDS(&quot;./knn_full_model.rds&quot;)</code></pre>
 pred_rf &lt;- predict(rf, model_data_test)
 pred_gb &lt;- predict(gb, model_data_test)
 pred_c50 &lt;- predict(c50, model_data_test)
-pred_knn &lt;- predict(knn, model_data_test)
-
-# confusion matrix accuracy for random forest
+pred_knn &lt;- predict(knn, model_data_test)</code></pre>
+<pre class="r"><code># confusion matrix accuracy for random forest
 confusionMatrix(pred_rf, model_data_test$is_fatal)$overall[[&quot;Accuracy&quot;]]</code></pre>
-<pre><code>## [1] 0.5825893</code></pre>
+<pre><code>## [1] 0.546875</code></pre>
 <pre class="r"><code># confusion matrix accuracy for k-nearest neighbors
 confusionMatrix(pred_knn, model_data_test$is_fatal)$overall[[&quot;Accuracy&quot;]]</code></pre>
-<pre><code>## [1] 0.578125</code></pre>
+<pre><code>## [1] 0.53125</code></pre>
 <pre class="r"><code># confusion matrix accuracy for stochastic gradient boost decision trees
 confusionMatrix(pred_gb, model_data_test$is_fatal)$overall[[&quot;Accuracy&quot;]]</code></pre>
-<pre><code>## [1] 0.5848214</code></pre>
+<pre><code>## [1] 0.5267857</code></pre>
 <pre class="r"><code># confusion matrix accuracy for C.50 decision trees
 confusionMatrix(pred_c50, model_data_test$is_fatal)$overall[[&quot;Accuracy&quot;]]</code></pre>
-<pre><code>## [1] 0.5647321</code></pre>
+<pre><code>## [1] 0.5267857</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>All of the models had low accuracy on the test data set, less then
-60%, which suggests that none of the studied factors - time of the day,
-season of the year, the borough, or the location type of the incident -
-have a significant impact on fatal vs. non-fatal incident outcome.</p>
-<p>Based on the data exploration and visualizaion, most of the incidents
-are non-fatal, and night time, summer, Brooklyn, and apartment buildings
-have the highest occurance of fatal incidents.</p>
+<p>Based on the data exploration and visualization, most of the
+incidents are non-fatal, and night time, summer, Brooklyn, and apartment
+buildings have the highest occurrence of fatal incidents.</p>
+<p>All of the models had relatively low accuracy on the test data set,
+around 60%, which suggests that none of the studied factors - time of
+the day, season of the year, the borough, or the location type of the
+incident - have a significant impact on fatal vs. non-fatal incident
+outcome.</p>
+<p>Random Forest model had the highest accuracy value, so we can examine
+it for the top 20 most important features:</p>
+<pre class="r"><code>varImp(rf, scale=FALSE)</code></pre>
+<pre><code>## rf variable importance
+## 
+##   only 20 most important variables shown (out of 48)
+## 
+##                                        Overall
+## location_descPVT HOUSE                  5.9512
+## location_descMULTI DWELL - PUBLIC HOUS  4.8153
+## daypartMorning                          3.7902
+## location_descMULTI DWELL - APT BUILD    2.3499
+## location_descDRY CLEANER/LAUNDRY        1.3752
+## location_descHOTEL/MOTEL                1.1078
+## boroQUEENS                              1.0876
+## seasonQ4                                0.9115
+## location_descRESTAURANT/DINER           0.8831
+## location_descGROCERY/BODEGA             0.7877
+## location_descBEAUTY/NAIL SALON          0.7432
+## boroBROOKLYN                            0.7318
+## seasonQ2                                0.7158
+## daypartAfternoon                        0.6794
+## boroMANHATTAN                           0.6731
+## location_descNONE                       0.6622
+## daypartEvening                          0.6531
+## location_descBAR/NIGHT CLUB             0.6427
+## location_descLIQUOR STORE               0.6069
+## seasonQ3                                0.5861</code></pre>
+<p>According to the variable importance table, location type is a very
+important feature, and its high importance values
+(e.g. <code>PVT_HOUSE</code>, <code>MULTI DWELL - PUBLIC HOUS</code>,
+<code>MULTI DWELL - APT BUILD</code>) reflect the findings from the
+visualization for fatality distribution across all the possible location
+types, but since the model accuracy is low, we still cannot conclude
+that location type has significant predictive power for the fatal
+outcome of a shooting, the model simply confirms what we already saw
+from the summary of the raw data - majority of shootings, both fatal and
+not, happen in someone’s home.</p>
+<p>Summary of location type for all shooting outcomes:</p>
+<pre class="r"><code>summary(nypd[c(&#39;location_desc&#39;, &#39;is_fatal&#39;)])</code></pre>
+<pre><code>##                    location_desc   is_fatal   
+##  MULTI DWELL - PUBLIC HOUS:4230   false:7746  
+##  MULTI DWELL - APT BUILD  :2551   true :2241  
+##  PVT HOUSE                : 858               
+##  GROCERY/BODEGA           : 572               
+##  BAR/NIGHT CLUB           : 558               
+##  COMMERCIAL BLDG          : 234               
+##  (Other)                  : 984</code></pre>
+<p>Summary of location type for non-fatal outcomes only:</p>
+<pre class="r"><code>summary(nonfatal[c(&#39;location_desc&#39;, &#39;is_fatal&#39;)])</code></pre>
+<pre><code>##                    location_desc   is_fatal   
+##  MULTI DWELL - PUBLIC HOUS:1021   false:2241  
+##  MULTI DWELL - APT BUILD  : 521   true :   0  
+##  PVT HOUSE                : 151               
+##  BAR/NIGHT CLUB           : 132               
+##  GROCERY/BODEGA           : 131               
+##  COMMERCIAL BLDG          :  58               
+##  (Other)                  : 227</code></pre>
 <div id="biases-in-the-data" class="section level2">
 <h2>Biases in the data</h2>
 <p>Based on the analysis, Brooklyn and apartment buildings contain the
 highest number of fatal incidents.</p>
 <p>However, Brooklyn is the most populous borough in New York City (<a href="https://www.census.gov/quickfacts/fact/table/newyorkcitynewyork,bronxcountybronxboroughnewyork,kingscountybrooklynboroughnewyork,newyorkcountymanhattanboroughnewyork,queenscountyqueensboroughnewyork,richmondcountystatenislandboroughnewyork/PST045219" class="uri">https://www.census.gov/quickfacts/fact/table/newyorkcitynewyork,bronxcountybronxboroughnewyork,kingscountybrooklynboroughnewyork,newyorkcountymanhattanboroughnewyork,queenscountyqueensboroughnewyork,richmondcountystatenislandboroughnewyork/PST045219</a>),
 and New York City is a very densely populated metropolis, so apartment
-buildings reprsent majority of available real estate (<a href="https://www.valuepenguin.com/new-york-city-renters-statistics#building-size" class="uri">https://www.valuepenguin.com/new-york-city-renters-statistics#building-size</a>).</p>
+buildings represent majority of available real estate (<a href="https://www.valuepenguin.com/new-york-city-renters-statistics#building-size" class="uri">https://www.valuepenguin.com/new-york-city-renters-statistics#building-size</a>).</p>
 <p>This introduces a bias to the data analysis and modeling, and any
 conclusions based on this data can be applied only to New York City, or
 a metropolis with similar population and real estate breakdown.</p>

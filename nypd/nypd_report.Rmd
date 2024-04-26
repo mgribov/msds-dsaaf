@@ -20,6 +20,8 @@ This report will study how borough, location type, season of the year, and time 
 # Importing and Cleaning the data
 
 ```{r libs, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+set.seed(12345)
+
 # required libraries
 library(lubridate)
 library(dplyr)
@@ -313,22 +315,30 @@ knn <- readRDS("./knn_full_model.rds")
 
 Analyzing model performance
 
-```{r model_perf, echo=TRUE}
+```{r model_pred, echo=TRUE}
 # generate predictions for each model from test dataset
 pred_rf <- predict(rf, model_data_test)
 pred_gb <- predict(gb, model_data_test)
 pred_c50 <- predict(c50, model_data_test)
 pred_knn <- predict(knn, model_data_test)
+```
 
+```{r model_pred_rf, echo=TRUE}
 # confusion matrix accuracy for random forest
 confusionMatrix(pred_rf, model_data_test$is_fatal)$overall[["Accuracy"]]
+```
 
+```{r model_pred_knn, echo=TRUE}
 # confusion matrix accuracy for k-nearest neighbors
 confusionMatrix(pred_knn, model_data_test$is_fatal)$overall[["Accuracy"]]
+```
 
+```{r model_pred_gb, echo=TRUE}
 # confusion matrix accuracy for stochastic gradient boost decision trees
 confusionMatrix(pred_gb, model_data_test$is_fatal)$overall[["Accuracy"]]
+```
 
+```{r model_pred_c50, echo=TRUE}
 # confusion matrix accuracy for C.50 decision trees
 confusionMatrix(pred_c50, model_data_test$is_fatal)$overall[["Accuracy"]]
 ```
@@ -336,14 +346,32 @@ confusionMatrix(pred_c50, model_data_test$is_fatal)$overall[["Accuracy"]]
 
 # Conclusion
 
-All of the models had low accuracy on the test data set, less then 60%, which suggests that none of the studied factors - time of the day, season of the year, the borough, or the location type of the incident - have a significant impact on fatal vs. non-fatal incident outcome.
+Based on the data exploration and visualization, most of the incidents are non-fatal, and night time, summer, Brooklyn, and apartment buildings have the highest occurrence of fatal incidents.
 
-Based on the data exploration and visualizaion, most of the incidents are non-fatal, and night time, summer, Brooklyn, and apartment buildings have the highest occurance of fatal incidents.
+All of the models had relatively low accuracy on the test data set, less than 60%, which suggests that none of the studied factors - time of the day, season of the year, the borough, or the location type of the incident - have a significant impact on fatal vs. non-fatal incident outcome.
 
+Random Forest model had the highest accuracy value, so we can examine it for the top 20 most important features:
+
+```{r rf_importance, echo=TRUE, message=FALSE, warning=FALSE}
+varImp(rf, scale=FALSE)
+```
+
+According to the variable importance table, location type is a very important feature, and its high importance values (e.g. `PVT_HOUSE`, `MULTI DWELL - PUBLIC HOUS`, `MULTI DWELL - APT BUILD`) reflect the findings from the visualization for fatality distribution across all the possible location types, but since the model accuracy is low, we still cannot conclude that location type has significant predictive power for the fatal outcome of a shooting, the model simply confirms what we already saw from the summary of the raw data - majority of shootings, both fatal and not, happen in someone's home.
+
+Summary of location type for all shooting outcomes:
+
+```{r sum_all, echo=TRUE}
+summary(nypd[c('location_desc', 'is_fatal')])
+```
+Summary of location type for non-fatal outcomes only:
+
+```{r sum_nonfatal, echo=TRUE}
+summary(nonfatal[c('location_desc', 'is_fatal')])
+```
 ## Biases in the data
 
 Based on the analysis, Brooklyn and apartment buildings contain the highest number of fatal incidents. 
 
-However, Brooklyn is the most populous borough in New York City (<https://www.census.gov/quickfacts/fact/table/newyorkcitynewyork,bronxcountybronxboroughnewyork,kingscountybrooklynboroughnewyork,newyorkcountymanhattanboroughnewyork,queenscountyqueensboroughnewyork,richmondcountystatenislandboroughnewyork/PST045219>), and New York City is a very densely populated metropolis, so apartment buildings reprsent majority of available real estate (<https://www.valuepenguin.com/new-york-city-renters-statistics#building-size>).
+However, Brooklyn is the most populous borough in New York City (<https://www.census.gov/quickfacts/fact/table/newyorkcitynewyork,bronxcountybronxboroughnewyork,kingscountybrooklynboroughnewyork,newyorkcountymanhattanboroughnewyork,queenscountyqueensboroughnewyork,richmondcountystatenislandboroughnewyork/PST045219>), and New York City is a very densely populated metropolis, so apartment buildings represent majority of available real estate (<https://www.valuepenguin.com/new-york-city-renters-statistics#building-size>).
 
 This introduces a bias to the data analysis and modeling, and any conclusions based on this data can be applied only to New York City, or a metropolis with similar population and real estate breakdown.
