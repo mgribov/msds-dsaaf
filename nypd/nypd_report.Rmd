@@ -368,6 +368,7 @@ Summary of location type for non-fatal outcomes only:
 ```{r sum_nonfatal, echo=TRUE}
 summary(nonfatal[c('location_desc', 'is_fatal')])
 ```
+
 ## Biases in the data
 
 Based on the analysis, Brooklyn and apartment buildings contain the highest number of fatal incidents. 
